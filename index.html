@@ -155,9 +155,10 @@
 </div>
 
 <script>
-    // 1. DANH SÁCH GAME CỦA BẠN (Cập nhật tại đây)
+    // 1. DANH SÁCH GAME 
+    // CHÚ Ý: Tên file phải viết hoa/thường chính xác 100% như trên GitHub
     const games = [
-        { name: "Contra (USA)", file: "https://github.com/ngochaidz/nes-games/blob/main/Contra%20(USA).nes" },
+        { name: "Contra (USA)", file: "Contra%20(USA).nes" },
         { name: "Contra Force", file: "contra.nes" },
         { name: "Tank 1990", file: "tank.nes" },
         { name: "Bomberman", file: "bomberman.nes" }
@@ -182,9 +183,9 @@
         element.classList.add('active');
         titleDisp.innerText = "Đang chơi: " + gameName;
 
-        // Build URL file từ Repository hiện tại
-        // GitHub Pages tự động phục vụ file trong cùng thư mục
-        const romUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + fileName;
+        // Lấy đường dẫn gốc của trang web hiện tại
+        const rootPath = window.location.href.split('?')[0].split('#')[0];
+        const romUrl = rootPath.substring(0, rootPath.lastIndexOf('/')) + '/' + fileName;
 
         // Nhúng EmulatorJS
         const emulatorHtml = `
@@ -206,7 +207,7 @@
     }
 
     // Màn hình chờ ban đầu
-    iframe.srcdoc = `<body style="background:#000; color:#555; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif;"><h1>CHƯA CÓ TÍN HIỆU</h1></body>`;
+    iframe.srcdoc = `<body style="background:#000; color:#555; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif; text-align:center;"><div><h1>NO SIGNAL</h1><p>Vui lòng chọn game bên trái</p></div></body>`;
 </script>
 
 </body>
