@@ -2,165 +2,179 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Game Center - NES Classics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Retro Handheld Console</title>
     <style>
         :root {
-            --bg-color: #0f0f13;
-            --sidebar-bg: #1a1a24;
-            --primary-color: #00d2ff;
-            --accent-color: #ff0055;
-            --text-color: #e0e0e0;
+            --body-bg: #0a0a0c;
+            --console-bg: #1e1e26;
+            --screen-border: #333;
+            --primary: #00d2ff;
+            --button-bg: #2d2d3a;
         }
 
         body, html {
             margin: 0; padding: 0;
-            height: 100%;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100%; width: 100%;
+            background-color: var(--body-bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
-        .container {
+        /* Layout Tổng thể */
+        .app-container {
             display: flex;
             height: 100vh;
             width: 100vw;
         }
 
-        /* Sidebar bên trái */
+        /* Sidebar cho PC */
         .sidebar {
-            width: 300px;
-            background-color: var(--sidebar-bg);
-            border-right: 2px solid #333;
+            width: 280px;
+            background: var(--console-bg);
             display: flex;
             flex-direction: column;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-            z-index: 10;
+            border-right: 1px solid #444;
+            transition: all 0.3s;
         }
 
         .sidebar-header {
-            padding: 25px;
+            padding: 20px;
+            background: linear-gradient(to bottom, #3a3a4a, #1e1e26);
             text-align: center;
-            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
-            color: white;
-        }
-
-        .sidebar-header h1 {
-            margin: 0; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase;
+            border-bottom: 2px solid var(--primary);
         }
 
         .game-list {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 10px;
         }
 
         .game-item {
-            display: block;
             width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            background: #252535;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: var(--text-color);
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--button-bg);
+            border: none;
+            border-radius: 6px;
+            color: #ccc;
             text-align: left;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-        }
-
-        .game-item:hover {
-            background: #303045;
-            border-color: var(--primary-color);
-            transform: scale(1.02);
+            transition: 0.2s;
         }
 
         .game-item.active {
-            background: var(--primary-color);
+            background: var(--primary);
             color: #000;
             font-weight: bold;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
         }
 
-        /* Khu vực chơi game bên phải */
-        .main-content {
+        /* Khu vực Máy chơi game */
+        .console-area {
             flex: 1;
             display: flex;
             flex-direction: column;
-            position: relative;
+            align-items: center;
+            justify-content: center;
             background: radial-gradient(circle, #222 0%, #000 100%);
+            padding: 10px;
         }
 
-        .top-bar {
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            text-align: center;
-            border-bottom: 1px solid #333;
+        .screen-container {
+            width: 100%;
+            max-width: 650px;
+            aspect-ratio: 4/3;
+            background: #000;
+            border: 12px solid var(--console-bg);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,0,0,1);
+            position: relative;
+            overflow: hidden;
         }
 
-        #game-title {
-            font-size: 1.2rem;
-            color: var(--primary-color);
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .game-info {
+            margin-bottom: 10px;
+            color: var(--primary);
             font-weight: bold;
             text-transform: uppercase;
         }
 
-        .emulator-wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        #nes-iframe {
-            width: 100%;
-            max-width: 800px;
-            aspect-ratio: 4/3;
-            border: 10px solid #333;
-            border-radius: 15px;
-            background: #000;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-        }
-
-        /* Responsive cho mobile */
+        /* ĐIỀU CHỈNH RIÊNG CHO ĐIỆN THOẠI (Mobile Portrait) */
         @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .sidebar { width: 100%; height: 30%; border-right: none; border-bottom: 2px solid #333; }
-            .main-content { height: 70%; }
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 120px; /* Thu gọn danh sách game lên trên hoặc dưới */
+                order: 2;
+                border-right: none;
+                border-top: 1px solid #444;
+            }
+
+            .game-list {
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .game-item {
+                flex: 0 0 140px;
+                margin-bottom: 0;
+                white-space: nowrap;
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .console-area {
+                height: calc(100vh - 120px);
+                justify-content: flex-start; /* Đẩy màn hình game lên trên */
+                padding-top: 20px;
+            }
+
+            .screen-container {
+                border-width: 6px;
+                max-width: 95vw;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app-container">
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>NES EMULATOR</h1>
+            <h2 style="margin:0; font-size: 1rem; color: var(--primary);">RETRO CONSOLE</h2>
         </div>
         <div class="game-list" id="game-list">
             </div>
     </div>
 
-    <div class="main-content">
-        <div class="top-bar">
-            <div id="game-title">CHỌN GAME ĐỂ CHƠI</div>
+    <div class="console-area">
+        <div class="game-info" id="current-title">CHỌN GAME</div>
+        <div class="screen-container">
+            <iframe id="emu-frame" allow="autoplay; gamepad"></iframe>
         </div>
-        <div class="emulator-wrapper">
-            <iframe id="nes-iframe" frameborder="0" allowfullscreen></iframe>
-        </div>
+        <div style="margin-top: 15px; font-size: 10px; color: #555;">EMULATOR V1.2 - BY NGOCHAIDZ</div>
     </div>
 </div>
 
 <script>
-    // 1. CẤU HÌNH TÊN USER VÀ REPO CỦA BẠN
     const GH_USER = "ngochaidz";
     const GH_REPO = "nes-games";
 
-    // 2. DANH SÁCH GAME 
-    // Tên file phải khớp chính xác với file trên GitHub (kể cả hoa/thường)
     const games = [
         { name: "Contra (USA)", file: "Contra (USA).nes" },
         { name: "Contra Force", file: "contra.nes" },
@@ -168,60 +182,63 @@
         { name: "Bomberman", file: "bomberman.nes" }
     ];
 
-    const gameListDiv = document.getElementById('game-list');
-    const iframe = document.getElementById('nes-iframe');
-    const titleDisp = document.getElementById('game-title');
+    const gameList = document.getElementById('game-list');
+    const iframe = document.getElementById('emu-frame');
+    const title = document.getElementById('current-title');
 
-    // 3. Tự động tạo danh sách nút bấm
-    games.forEach((game) => {
+    games.forEach(game => {
         const btn = document.createElement('button');
         btn.className = 'game-item';
         btn.innerHTML = `🎮 ${game.name}`;
-        btn.onclick = () => loadGame(game.file, game.name, btn);
-        gameListDiv.appendChild(btn);
+        btn.onclick = () => {
+            document.querySelectorAll('.game-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadGame(game);
+        };
+        gameList.appendChild(btn);
     });
 
-    function loadGame(fileName, gameName, element) {
-        // Cập nhật giao diện nút
-        document.querySelectorAll('.game-item').forEach(b => b.classList.remove('active'));
-        element.classList.add('active');
-        titleDisp.innerText = "Đang chơi: " + gameName;
+    function loadGame(game) {
+        title.innerText = "Đang chơi: " + game.name;
+        const romUrl = `https://${GH_USER}.github.io/${GH_REPO}/${encodeURIComponent(game.file)}`;
 
-        // TẠO LINK RAW CHUẨN ĐỂ GIẢ LẬP ĐỌC ĐƯỢC
-        // Link có dạng: https://ngochaidz.github.io/nes-games/Contra%20(USA).nes
-        const encodedFileName = encodeURIComponent(fileName);
-        const romUrl = `https://${GH_USER}.github.io/${GH_REPO}/${encodedFileName}`;
-
-        console.log("Đang tải game từ:", romUrl); // Dòng này để kiểm tra lỗi nếu có
-
-        // Nhúng EmulatorJS
-        const emulatorHtml = `
+        // Cấu hình EmulatorJS tối ưu cho Mobile
+        const emuHTML = `
             <!DOCTYPE html>
             <html>
                 <head>
-                    <meta charset="UTF-8">
-                    <style>body, html { margin: 0; padding: 0; background: #000; overflow: hidden; height: 100%; }</style>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                    <style>
+                        body, html { margin: 0; padding: 0; background: #000; height: 100%; overflow: hidden; }
+                        #game { width: 100%; height: 100%; }
+                    </style>
                 </head>
                 <body>
-                    <div id="game" style="width:100%; height:100vh;"></div>
+                    <div id="game"></div>
                     <script>
                         EJS_player = "#game";
-                        EJS_core = "nes"; // Lõi chạy game NES
+                        EJS_core = "nes";
                         EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
                         EJS_gameUrl = "${romUrl}";
+                        
+                        // Cấu hình nút bấm ảo
+                        EJS_Buttons = {
+                            "up": "Lên", "down": "Xuống", "left": "Trái", "right": "Phải",
+                            "a": "A", "b": "B", "start": "Start", "select": "Select"
+                        };
+                        
+                        // Tối ưu để các nút không che màn hình quá nhiều
+                        EJS_mouse_enabled = false;
+                        EJS_virtual_gamepad = true; 
                     <\/script>
                     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"><\/script>
                 </body>
             </html>
         `;
-        
-        // Xóa iframe cũ và tạo lại để tránh lỗi cache của trình duyệt
-        iframe.srcdoc = emulatorHtml;
+        iframe.srcdoc = emuHTML;
     }
 
-    // Màn hình chờ ban đầu
-    iframe.srcdoc = `<body style="background:#000; color:#00d2ff; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif; text-align:center;"><div><h1 style="letter-spacing:5px;">READY TO PLAY</h1><p>Chọn game bên trái để bắt đầu</p></div></body>`;
+    iframe.srcdoc = `<body style="background:#000; color:#444; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif;"><h3>READY</h3></body>`;
 </script>
-
 </body>
 </html>
