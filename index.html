@@ -155,10 +155,14 @@
 </div>
 
 <script>
-    // 1. DANH SÁCH GAME 
-    // CHÚ Ý: Tên file phải viết hoa/thường chính xác 100% như trên GitHub
+    // 1. CẤU HÌNH TÊN USER VÀ REPO CỦA BẠN
+    const GH_USER = "ngochaidz";
+    const GH_REPO = "nes-games";
+
+    // 2. DANH SÁCH GAME 
+    // Tên file phải khớp chính xác với file trên GitHub (kể cả hoa/thường)
     const games = [
-        { name: "Contra (USA)", file: "Contra%20(USA).nes" },
+        { name: "Contra (USA)", file: "Contra (USA).nes" },
         { name: "Contra Force", file: "contra.nes" },
         { name: "Tank 1990", file: "tank.nes" },
         { name: "Bomberman", file: "bomberman.nes" }
@@ -168,8 +172,8 @@
     const iframe = document.getElementById('nes-iframe');
     const titleDisp = document.getElementById('game-title');
 
-    // 2. Tự động tạo danh sách nút bấm
-    games.forEach((game, index) => {
+    // 3. Tự động tạo danh sách nút bấm
+    games.forEach((game) => {
         const btn = document.createElement('button');
         btn.className = 'game-item';
         btn.innerHTML = `🎮 ${game.name}`;
@@ -183,19 +187,26 @@
         element.classList.add('active');
         titleDisp.innerText = "Đang chơi: " + gameName;
 
-        // Lấy đường dẫn gốc của trang web hiện tại
-        const rootPath = window.location.href.split('?')[0].split('#')[0];
-        const romUrl = rootPath.substring(0, rootPath.lastIndexOf('/')) + '/' + fileName;
+        // TẠO LINK RAW CHUẨN ĐỂ GIẢ LẬP ĐỌC ĐƯỢC
+        // Link có dạng: https://ngochaidz.github.io/nes-games/Contra%20(USA).nes
+        const encodedFileName = encodeURIComponent(fileName);
+        const romUrl = `https://${GH_USER}.github.io/${GH_REPO}/${encodedFileName}`;
+
+        console.log("Đang tải game từ:", romUrl); // Dòng này để kiểm tra lỗi nếu có
 
         // Nhúng EmulatorJS
         const emulatorHtml = `
             <!DOCTYPE html>
             <html>
-                <body style="margin:0; background:#000; overflow:hidden;">
-                    <div id="game"></div>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>body, html { margin: 0; padding: 0; background: #000; overflow: hidden; height: 100%; }</style>
+                </head>
+                <body>
+                    <div id="game" style="width:100%; height:100vh;"></div>
                     <script>
                         EJS_player = "#game";
-                        EJS_core = "nes";
+                        EJS_core = "nes"; // Lõi chạy game NES
                         EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
                         EJS_gameUrl = "${romUrl}";
                     <\/script>
@@ -203,11 +214,13 @@
                 </body>
             </html>
         `;
+        
+        // Xóa iframe cũ và tạo lại để tránh lỗi cache của trình duyệt
         iframe.srcdoc = emulatorHtml;
     }
 
     // Màn hình chờ ban đầu
-    iframe.srcdoc = `<body style="background:#000; color:#555; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif; text-align:center;"><div><h1>NO SIGNAL</h1><p>Vui lòng chọn game bên trái</p></div></body>`;
+    iframe.srcdoc = `<body style="background:#000; color:#00d2ff; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif; text-align:center;"><div><h1 style="letter-spacing:5px;">READY TO PLAY</h1><p>Chọn game bên trái để bắt đầu</p></div></body>`;
 </script>
 
 </body>
